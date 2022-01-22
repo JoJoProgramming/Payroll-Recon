@@ -1,43 +1,51 @@
 import tkinter as tk
+import string as str
 
-STANDARD_FONT = ("FS Elliot Pro", 12)
+LARGE_FONT = ("FS Elliot Pro", 12)
+STANDARD_FONT = ("FS Elliot Pro Light", 8)
+ALPHABET_LIST = str.ascii_lowercase
+USER_ID = ""
+USER_PASSWORD = ""
 
-class AppFrame(tk.Tk):
-    windowList = {}
-    __init__(self, *arg, **kwarg):
-        #initializing Tk to build the frame with arguments)
-        tk.Tk.__init__(self, *arg, **kwarg)
-        appContainer = tk.Frame(self)
-        appContainer.pack(side = "top", fill = "both", expand = True)
-        #stating the app window has priority
-        appContainer.grid_rowconfigure(0, weight = 1)
-        appContainer.grid_columnconfigure(0, weight = 1)
-        appContainer.geometry("400x400")
-        #empty list to contain windows of the app
-        self.windows = {}
-        #W is the variable each window is mapped to in the For loop
-        for W in windowList:
-            frame = W(appContainer, self)
-            self.windows[W] = frame
-            frame.grid(row=0, column=0, sticky = "nsew")
-        #initializes program using window HomeWindow
-        self.show_frame(HomeWindow)
+root = tk.Tk()
+root.title = "Payroll Reconciliation"
+root.iconbitmap("C:\Programs\Python\Payroll_Recon\Resources\PFG Logo.png")
+root.geometry("400x400")
+
+class MainApp:
+    def __init__(self, root):
+        self.loginFrame = tk.Frame(root)
+        self.show_frame(LoginPage)
     
-    def show_frame(self, cont):
-        #cont indicates that the self.frames is within the init method
-        frame = self.windows[cont]
-        frame.tkraise()
+    def show_frame(self, root):
 
-#adds page to window
-class StartPage(tk.Frame):
-    #init here requires 3 arguments as the parent init uses 3 arguments
-    #parent here refers to the mainapp class
-    #parent is seen as the argument, controller is seen as the keyword argument
-    def __init__(self, parent, controller):
-        tk.Frame.__init__(self, parent)
-        #STANDARD_FONT is a global variable
-        label = tk.Label(self, text = "Start Page", font = STANDARD_FONT)
-        label.pack(pady = 10, padx = 10)
-        button1 = tk.Button(self, text = "Visit Page 1",
-         command = lambda: controller.show_frame(PageOne))
-        button1.pack()
+
+class LoginPage(tk.Frame):
+    #initializes object
+    def __init__(self, root):
+    #intializes class tk.Frame
+        tk.Frame.__init__(self, root)
+        self.uidLabel = tk.Label(self, text = "User ID:", font = STANDARD_FONT)
+        self.upwLabel = tk.Label(self, text = "User Password:", font = STANDARD_FONT)
+        self.uidEntry = tk.Entry(self)
+        self.upwEntry = tk.Entry(self)
+        self.loginButton = tk.Button(self1, text="Login", font=STANDARD_FONT, command = ButtonFunctions.userLogin)
+        self.uidLabel.grid(row = 1, column = 0)
+        self.upwLabel.grid(row = 2, column = 0)
+        self.uidEntry.grid(row = 1, column = 1)
+        self.upwEntry.grid(row = 2, column = 1)
+        self.loginButton.grid(row = 3, column = 0, columnspan = 2)
+
+class ButtonFunctions:
+    def userLogin():
+        USER_ID = login.uidEntry.get()
+        USER_PASSWORD = login.upwEntry.get()
+        #return len(USER_ID) == 7 and USER_ID[0].lower() in ALPHABET_LIST and len(USER_PASSWORD) > 0 and len(USER_PASSWORD) <= 8
+    
+
+
+
+login = MainApp(root)
+print(USER_ID)
+print(USER_PASSWORD)
+root.mainloop()
