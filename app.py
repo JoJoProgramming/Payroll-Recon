@@ -1,5 +1,6 @@
 import tkinter as tk
 import string as str
+from tkinter import ttk
 
 LARGE_FONT = ("FS Elliot Pro", 12)
 STANDARD_FONT = ("FS Elliot Pro Light", 8)
@@ -7,45 +8,57 @@ ALPHABET_LIST = str.ascii_lowercase
 USER_ID = ""
 USER_PASSWORD = ""
 
-root = tk.Tk()
-root.title = "Payroll Reconciliation"
-root.iconbitmap("C:\Programs\Python\Payroll_Recon\Resources\PFG Logo.png")
-root.geometry("400x400")
+class Root(tk.Tk):
+    def __init__(self, *args, **kwargs):
+        tk.Tk.__init__(self, *args, **kwargs)
+        #self.geometry("400x400")
+        #self.title("Payroll Reconciliation")
+        rootFrame = tk.Frame(self)
+        rootFrame.grid(column = 0, row = 0, sticky = "nsew")
+        rootFrame.grid_columnconfigure(0, weight = 1)
+        rootFrame.grid_rowconfigure(0, weight = 1)
+        self.frames = {}
+        for F in (LoginPage, SearchCriteriaPage):
+            frame = F(rootFrame, self)
+            self.frames[F] = frame
+        self.Show_Frame(LoginPage)
 
-class MainApp:
-    def __init__(self, root):
-        self.loginFrame = tk.Frame(root)
-        self.show_frame(LoginPage)
-    
-    def show_frame(self, root):
-
+    def Show_Frame(self, controller):
+        frame = self.frames[controller]
+        frame.tkraise()
+        
 
 class LoginPage(tk.Frame):
-    #initializes object
-    def __init__(self, root):
-    #intializes class tk.Frame
-        tk.Frame.__init__(self, root)
-        self.uidLabel = tk.Label(self, text = "User ID:", font = STANDARD_FONT)
-        self.upwLabel = tk.Label(self, text = "User Password:", font = STANDARD_FONT)
-        self.uidEntry = tk.Entry(self)
-        self.upwEntry = tk.Entry(self)
-        self.loginButton = tk.Button(self1, text="Login", font=STANDARD_FONT, command = ButtonFunctions.userLogin)
-        self.uidLabel.grid(row = 1, column = 0)
-        self.upwLabel.grid(row = 2, column = 0)
-        self.uidEntry.grid(row = 1, column = 1)
-        self.upwEntry.grid(row = 2, column = 1)
-        self.loginButton.grid(row = 3, column = 0, columnspan = 2)
+    def __init__(self, parent, controller):
+        tk.Frame.__init__(self, parent)
+        loginLabel = ttk.Label(self, text = "Login Information", font = LARGE_FONT)
+        loginLabel.grid(row = 0, column = 1)
+        uidLabel = ttk.Label(self, text = "User ID:", font = STANDARD_FONT)
+        upwLabel = ttk.Label(self, text = "User Password:", font = STANDARD_FONT)
+        uidEntry = ttk.Entry(self)
+        upwEntry = ttk.Entry(self)
+        uidLabel.grid(row = 1, column = 0)
+        uidEntry.grid(row = 1, column = 1)
+        upwLabel.grid(row = 2, column = 0)
+        upwEntry.grid(row = 2, column = 1)
+        loginButton = ttk.Button(self, text = "Login",
+         command = lambda: Root.Show_Frame(SearchCriteriaPage))
+        loginButton.grid(row = 3, column = 1, columnspan = 2)
 
-class ButtonFunctions:
-    def userLogin():
-        USER_ID = login.uidEntry.get()
-        USER_PASSWORD = login.upwEntry.get()
-        #return len(USER_ID) == 7 and USER_ID[0].lower() in ALPHABET_LIST and len(USER_PASSWORD) > 0 and len(USER_PASSWORD) <= 8
-    
+class SearchCriteriaPage(ttk.Frame):
+    def __init__(self, parent, controller):
+        ttk.Frame.__init__(self, parent)
+        self.grid_columnconfigure(0, weight = 1)
+        contractLabel = ttk.Label(self, text = "Contract Number:", font = STANDARD_FONT)
+        contractEntry = ttk.Entry(self)
+        contractEntry.insert(0, "6-digit Contract Number")
+        contractEntry.grid_columnconfigure(0, weight = 1)
+        contractLabel.grid(row = 1, column = 0)
+        contractEntry.grid(row = 1, column = 0)
+        logoutButton = ttk.Button(self, text = "Logout",
+         command = lambda: Root.Show_Frame(LoginPage))
+        logoutButton.grid(row = 3, column = 1)
 
 
-
-login = MainApp(root)
-print(USER_ID)
-print(USER_PASSWORD)
-root.mainloop()
+mainApp = Root()
+mainApp.mainloop()
